@@ -27,6 +27,6 @@ if __name__ == '__main__':
         parser = ConfigParser()
         parser.read('config.ini')
         settings = parser['app']
-        app.run()
+        app.run(port=int(settings.get('port', 5000)), debug=bool(settings.get('debug', False)))
     finally:
         app.logger.info('STOPPING SERVER')

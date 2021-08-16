@@ -1,3 +1,2 @@
-flask
-flask-sqlalchemy
-flask-restful
+flask==2.0.1
+flask-sqlalchemy==2.5.1
