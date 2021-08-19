@@ -69,21 +69,21 @@ curl -d '{"name": "test_name", "description": "", "price": "10.24", "age": 5, "s
 
 Some other urls to get information about center/animal/specie
 
-GET:
-    -urls to get all animals, species or centers:
-        */animals
-        */species
-        */centers
-    -urls to get animal, specie or center by id:
-        */center/<id>
-        */animal/<id>
-        */specie/<id>
-PUT:
-    -url to edit animal:
-        */animal/<id>
-DELETE:
-    -url to delete animal:
-        */animal/<id>
+- GET:
+    - urls to get all animals, species or centers:
+        * /animals
+        * /species
+        * /centers
+    - urls to get animal, specie or center by id:
+        * /center/<id>
+        * /animal/<id>
+        * /specie/<id>
+- PUT:
+    - url to edit animal:
+        * /animal/<id>
+- DELETE:
+    - url to delete animal:
+        * /animal/<id>
 
 ### P.S.
 if *python3* command doesn't work for you, try to use *py* or *python* instead
