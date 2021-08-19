@@ -75,15 +75,15 @@ Some other urls to get information about center/animal/specie
         * /species
         * /centers
     - urls to get animal, specie or center by id:
-        * /center/<id>
-        * /animal/<id>
-        * /specie/<id>
+        * /center/\<id\>
+        * /animal/\<id\>
+        * /specie/\<id\>
 - PUT:
     - url to edit animal:
-        * /animal/<id>
+        * /animal/\<id\>
 - DELETE:
     - url to delete animal:
-        * /animal/<id>
+        * /animal/\<id\>
 
 ### P.S.
 if *python3* command doesn't work for you, try to use *py* or *python* instead
