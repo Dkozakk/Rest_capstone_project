@@ -1,13 +1,12 @@
-from rest_project import db, app
-from rest_project.models.center_models import Center
-from rest_project.utils.jwt_utils import generate_expire_date, jwt_required
-from rest_project.service.center import get_center_by_id, get_all_centers, register_center, get_jwt_token
-
-from flask import request, Response, jsonify
-
-from werkzeug.security import generate_password_hash, check_password_hash
-
 import json
+
+from flask import Response, jsonify, request
+from rest_project import app, db
+from rest_project.models.center_models import Center
+from rest_project.service.center import (get_all_centers, get_center_by_id,
+                                         get_jwt_token, register_center)
+from rest_project.utils.jwt_utils import generate_expire_date, jwt_required
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 @app.route('/register', methods=['POST'])

@@ -1,12 +1,10 @@
+import json
 import unittest
 
 from rest_project import app, db
-from rest_project.rest.center_api import *
-from rest_project.models.center_models import Center
 from rest_project.models.animals_models import Animal
-
-import json
-
+from rest_project.models.center_models import Center
+from rest_project.rest.center_api import *
 
 headers={"Content-type": "application/json"}
 

@@ -1,14 +1,12 @@
 from sqlite3.dbapi2 import IntegrityError
-from rest_project import app, db
-from rest_project.models.center_models import Center
-from rest_project.utils.jwt_utils import generate_expire_date
-from rest_project.utils.checking_utils import check_center_attributes
-
-from flask import jsonify, Response
-
-from werkzeug.security import generate_password_hash, check_password_hash
 
 import jwt
+from flask import Response, jsonify
+from rest_project import app, db
+from rest_project.models.center_models import Center
+from rest_project.utils.checking_utils import check_center_attributes
+from rest_project.utils.jwt_utils import generate_expire_date
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 def get_all_centers():

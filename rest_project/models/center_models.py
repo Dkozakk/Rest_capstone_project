@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy.orm import backref
 from rest_project import db
+from sqlalchemy.orm import backref
 
 
 class Center(db.Model):
@@ -14,6 +14,7 @@ class Center(db.Model):
     address = db.Column(db.String(255), nullable=False)
     
     jwt_accesses = db.relationship('JWTAccess', backref=db.backref('center', lazy=True))
+    
     def serialize(self):
         return {
             "login": self.login,

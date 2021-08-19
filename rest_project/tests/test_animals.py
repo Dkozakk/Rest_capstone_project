@@ -1,12 +1,10 @@
+import json
 import unittest
 
 from rest_project import app, db
-from rest_project.rest.animals_api import *
-from rest_project.models.center_models import Center
 from rest_project.models.animals_models import Animal, Specie
-
-import json
-
+from rest_project.models.center_models import Center
+from rest_project.rest.animals_api import *
 
 headers={'Content-type': 'application/json'}
 
@@ -42,7 +40,7 @@ class TestAnimals(unittest.TestCase):
         cls.jwt = response.data.decode('utf-8')
     
     def test_create_animal(self):        
-        specie_response = self.app.post(f'/species?token={self.jwt}', headers=headers, json=self.specie_data)
+        self.app.post(f'/species?token={self.jwt}', headers=headers, json=self.specie_data)
         response = self.app.post(f'/animals?token={self.jwt}', headers=headers, json=self.animal_data)
         self.assertIn(b'created', response.data)
     

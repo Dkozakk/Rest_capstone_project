@@ -1,10 +1,11 @@
+from datetime import datetime, timedelta
+
+import jwt
 from flask import request
 from flask.json import jsonify
 from rest_project import app
 from rest_project.models.center_models import Center, JWTAccess
 
-import jwt
-from datetime import datetime, timedelta
 
 def generate_expire_date():
     """

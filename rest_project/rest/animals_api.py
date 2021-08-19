@@ -1,20 +1,13 @@
-from rest_project import app
-from rest_project.models.animals_models import Animal, Specie
-from rest_project.service.animals import (
-                                            get_all_animals, 
-                                            create_new_animal, 
-                                            create_new_specie, 
-                                            get_all_species, 
-                                            get_animal_by_id, 
-                                            edit_animal, 
-                                            remove_animal,
-                                            get_specie_by_id
-                                        )
-from rest_project.utils.jwt_utils import jwt_required
+import json
 
 from flask import request
-
-import json
+from rest_project import app
+from rest_project.models.animals_models import Animal, Specie
+from rest_project.service.animals import (create_new_animal, create_new_specie,
+                                          edit_animal, get_all_animals,
+                                          get_all_species, get_animal_by_id,
+                                          get_specie_by_id, remove_animal)
+from rest_project.utils.jwt_utils import jwt_required
 
 
 @app.route('/animals', methods=['GET', 'POST'])

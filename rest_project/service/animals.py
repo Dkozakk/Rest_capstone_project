@@ -1,12 +1,11 @@
-from rest_project import db
-from rest_project.models.animals_models import Animal, Specie
-from rest_project.utils.checking_utils import check_animal_attributes, check_specie_attributes
-
-from flask import jsonify, Response, request
-
 import logging
 from sqlite3 import IntegrityError
 
+from flask import Response, jsonify, request
+from rest_project import db
+from rest_project.models.animals_models import Animal, Specie
+from rest_project.utils.checking_utils import (check_animal_attributes,
+                                               check_specie_attributes)
 
 logger = logging.getLogger('logger')
 
