@@ -93,7 +93,7 @@ python3 -m unittest
 ```
 
 Results
-![Tests image]('https://github.com/Dkozakk/Rest_capstone_project/blob/main/img/tests.jpg?raw=true')
+![Tests image](/img/tests.png)
 
 ### P.S.
 if *python3* command doesn't work for you, try to use *py* or *python* instead
