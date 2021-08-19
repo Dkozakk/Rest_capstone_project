@@ -55,7 +55,7 @@ def create_specie(center):
     data = request.get_json() or json.loads(request.get_data())
     name = data.get('name')
     description = data.get('description', '')
-    response = create_new_specie(name=name, description=description)
+    response = create_new_specie(name=name, description=description, center=center)
     return response
 
 
@@ -64,14 +64,22 @@ def get_animal(id):
     return animal_or_response
 
 
-def put_animal(id):
+def put_animal(center, id):
     data = request.get_json() or json.loads(request.get_data())
     name = data['name']
     price = data['price']
     description = data['description']
     age = data['age']
     specie = data['specie']
-    response = edit_animal(id=id, name=name, price=price, description=description, specie=specie, age=age)
+    response = edit_animal(
+        id=id, 
+        name=name, 
+        price=price, 
+        description=description, 
+        specie=specie, 
+        age=age, 
+        center=center,
+        )
     return response
 
 
@@ -94,7 +102,7 @@ def animal(id):
     if  request.method == 'GET': 
         return get_animal(id)
     elif request.method == 'PUT': 
-        return put_animal(id)
+        return jwt_required(put_animal)(id=id)
     elif request.method == 'DELETE': 
         return jwt_required(delete_animal)(id=id)
 

@@ -1,4 +1,5 @@
 import logging
+from rest_project.models.center_models import Center
 from sqlite3 import IntegrityError
 
 from flask import Response, jsonify, request
@@ -7,9 +8,20 @@ from rest_project.models.animals_models import Animal, Specie
 from rest_project.utils.checking_utils import (check_animal_attributes,
                                                check_specie_attributes)
 
-logger = logging.getLogger('logger')
+logger = logging.getLogger('rest_app_logger')
 
 message = "{method} | {url} | {center_id} | {entity_type} | {entity_id}"
+
+
+def log(center_id, entity_type, entity_id):
+    logger.info(message.format(
+        method=request.method, 
+        url=request.url, 
+        center_id=center_id, 
+        entity_type=entity_type, 
+        entity_id=entity_id,
+        )
+    )
 
 
 def get_all_animals():
@@ -63,15 +75,19 @@ def create_new_animal(name, age, description, price, specie, center):
     animal.center = center
     db.session.add(animal)
     db.session.commit()
+    log(center_id=center.id, entity_type='Animal', entity_id=animal.id)
+
+
     return Response("Animal was created")
 
 
-def create_new_specie(name, description):
+def create_new_specie(name, description, center):
     """
     function create new specie and save into database
     attrs:
         name: str species name
         description: str species description
+        center: Center just for logging
     """
     if not name or not description:
         return Response("Error, you didn't provide name or description")
@@ -83,6 +99,7 @@ def create_new_specie(name, description):
     specie = Specie(name=name, description=description)
     db.session.add(specie)
     db.session.commit()
+    log(center_id=center.id, entity_type='Specie', entity_id=specie.id)
     return Response("Specie was created")
 
 
@@ -126,7 +143,7 @@ def get_animal_by_id(id):
     return jsonify(animal.serialize())
 
 
-def edit_animal(id, name, description, price, age, specie):
+def edit_animal(id, name, description, price, age, specie, center):
     """
     function update value of animal in database
     attrs:
@@ -152,6 +169,7 @@ def edit_animal(id, name, description, price, age, specie):
         return Response("Error, you must create this specie first")
     animal.specie = specie
     db.session.commit()
+    log(center_id=center.id, entity_type='Animal', entity_id=id)
     return Response("Animal was updated")
 
 
@@ -171,5 +189,6 @@ def remove_animal(center, id):
     if animal.center == center:
         db.session.delete(animal)
         db.session.commit()
+        log(center_id=center.id, entity_id=id, entity_type='Animal')
         return Response("Animal was deleted")
     return Response("Error, this animal is not your own")

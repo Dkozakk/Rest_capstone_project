@@ -1,12 +1,28 @@
 from sqlite3.dbapi2 import IntegrityError
 
+import logging
 import jwt
-from flask import Response, jsonify
+from flask import Response, jsonify, request
 from rest_project import app, db
 from rest_project.models.center_models import Center
 from rest_project.utils.checking_utils import check_center_attributes
 from rest_project.utils.jwt_utils import generate_expire_date
 from werkzeug.security import check_password_hash, generate_password_hash
+
+logger = logging.getLogger('rest_app_logger')
+
+message = "{method} | {url} | {center_id} | {entity_type} | {entity_id}"
+
+
+def log(center_id, entity_type, entity_id):
+    logger.info(message.format(
+        method=request.method, 
+        url=request.url, 
+        center_id=center_id, 
+        entity_type=entity_type, 
+        entity_id=entity_id,
+        )
+    )
 
 
 def get_all_centers():
@@ -60,6 +76,7 @@ def register_center(login, password, address):
         center = Center(login=login, password=hashed_password, address=address)
         db.session.add(center)
         db.session.commit()
+        log(center_id=center.id, entity_type='Center', entity_id=center.id)
     except Exception:
         return Response("Center whith this name already exists")
     app.logger.info('CENTER CREATED')
