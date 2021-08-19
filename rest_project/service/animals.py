@@ -1,41 +1,101 @@
 from rest_project import db
-from rest_project.models.animals import Animal, Specie
+from rest_project.models.animals_models import Animal, Specie
+from rest_project.utils.checking_utils import check_animal_attributes, check_specie_attributes
 
-from flask import jsonify, Response
+from flask import jsonify, Response, request
+
+import logging
+from sqlite3 import IntegrityError
+
+
+logger = logging.getLogger('logger')
+
+message = "{method} | {url} | {center_id} | {entity_type} | {entity_id}"
 
 
 def get_all_animals():
+    """
+    function for get all animals from database
+    return:
+        list of all serialized animal in json format
+    """
     return jsonify([animal.serialize() for animal in Animal.query.all()])
 
 
 def get_specie_by_name(specie_name):
+    """
+    function for get specie by name from database
+    attrs:
+        specie_name: str name of specie
+    return:
+        first occurrence specie with name specie_name
+    """
     specie = Specie.query.filter_by(name=specie_name).first()
     return specie
 
 def create_new_animal(name, age, description, price, specie, center):
+    """
+    function for creating new animal and save into database
+    attrs:
+        name: str animals name
+        age: int animals age
+        description: str animals description
+        price: str animals price
+        specie: str animals specie name
+        center: Center center that owns this animal
+    return:
+        Error response
+        Success response
+    """
     if not name or not age or not description or not price or not specie:
         return Response("Error, you didn't provide one or more fields")
+    
+    checked, msg = check_animal_attributes(name=name, age=age, price=price, description=description)
+    if not checked:
+        return Response(msg)
+
     specie = get_specie_by_name(specie)
+    
     if not specie:
         return Response("Error, you must create this specie first")
+    
     animal = Animal(name=name, age=age, description=description, price=price)
     animal.specie = specie
     animal.center = center
     db.session.add(animal)
     db.session.commit()
-    return Response("Success")
+    return Response("Animal was created")
 
 
 def create_new_specie(name, description):
+    """
+    function create new specie and save into database
+    attrs:
+        name: str species name
+        description: str species description
+    """
     if not name or not description:
         return Response("Error, you didn't provide name or description")
+    
+    checked, msg = check_specie_attributes(name=name, description=description)
+    if not checked:
+        return Response(msg) 
+
     specie = Specie(name=name, description=description)
     db.session.add(specie)
     db.session.commit()
-    return Response("Success")
+    return Response("Specie was created")
 
 
 def get_specie_by_id(id):
+    """
+    function get specie by id from database
+    attrs:
+        id: int id for search specie
+    return:
+        Error response
+        specie with animals in json format
+    """
     specie = Specie.query.get(id)
     if not specie:
         return Response("Specie with given id does not exist")
@@ -43,11 +103,24 @@ def get_specie_by_id(id):
 
 
 def get_all_species():
+    """
+    function get all species from database
+    return:
+        list of species with counts animals in json format
+    """
     species = Specie.query.all()
     return jsonify([{"specie": specie.name, "animals": len(specie.animals)} for specie in species])
 
 
 def get_animal_by_id(id):
+    """
+    function get animal by id from database
+    attrs:
+        id: int id for search animal
+    return:
+        Error response
+        serialized animal in format json
+    """
     animal = Animal.query.get(id)
     if not animal:
         return Response("Animal with given id does not exist")
@@ -55,6 +128,19 @@ def get_animal_by_id(id):
 
 
 def edit_animal(id, name, description, price, age, specie):
+    """
+    function update value of animal in database
+    attrs:
+        id: int id animal you want to update
+        name: str new animals name
+        description: str new animals description
+        price: str new animals price
+        age: int new animals age
+        specie: new animals specie
+    return:
+        Error response
+        Success response
+    """
     animal = Animal.query.get(id)
     if not animal:
         return Response("Animal with given id does not exist")    
@@ -64,18 +150,27 @@ def edit_animal(id, name, description, price, age, specie):
     animal.age = age
     specie = get_specie_by_name(specie)
     if not specie:
-            return Response("Error, you must create this specie first")
+        return Response("Error, you must create this specie first")
     animal.specie = specie
     db.session.commit()
-    return Response("Success")
+    return Response("Animal was updated")
 
 
 def remove_animal(center, id):
+    """
+    function delete animal from database
+    attrs:
+        center: Center center which owns animal
+        id: int animals id to delete
+    return:
+        Error response
+        Success response
+    """
     animal = Animal.query.get(id)
     if not animal:
         return Response("Animal with given id does not exist")
     if animal.center == center:
         db.session.delete(animal)
         db.session.commit()
-        return Response("Success")
+        return Response("Animal was deleted")
     return Response("Error, this animal is not your own")

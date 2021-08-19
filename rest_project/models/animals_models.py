@@ -2,6 +2,9 @@ from rest_project import db
 
 
 class Animal(db.Model):
+    """
+    Animals table
+    """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
@@ -25,6 +28,9 @@ class Animal(db.Model):
 
 
 class Specie(db.Model):
+    """
+    Species table
+    """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)

@@ -1,5 +1,5 @@
 from rest_project import app
-from rest_project.models.animals import Animal, Specie
+from rest_project.models.animals_models import Animal, Specie
 from rest_project.service.animals import (
                                             get_all_animals, 
                                             create_new_animal, 
@@ -14,21 +14,26 @@ from rest_project.utils.jwt_utils import jwt_required
 
 from flask import request
 
+import json
+
 
 @app.route('/animals', methods=['GET', 'POST'])
 def animals():
+    """
+    rest api endpoint
+    GET request:
+        return full list of animals
+    POST request:
+        create an new animal with all required attrs
+    """
     if request.method == 'GET':
-        return get_animals()
+        return get_all_animals()
     return create_animal()
-
-
-def get_animals():
-    return get_all_animals()
 
 
 @jwt_required
 def create_animal(center):
-    data = request.get_json()
+    data = request.get_json() or json.loads(request.get_data())
     name = data.get('name')
     description = data.get('name')
     age = data.get('age')
@@ -40,16 +45,21 @@ def create_animal(center):
 
 @app.route('/species', methods=['POST', 'GET'])
 def species():
+    """
+    rest api endpoint
+    GET request:
+        return full list of species with count of elements on each species
+    POST request:
+        create an new specie with all required attrs
+    """
     if request.method == 'GET':
-        return get_species()
+        return get_all_species()
     return create_specie()
 
-def get_species():
-    return get_all_species()
 
 @jwt_required
 def create_specie(center):
-    data = request.get_json()
+    data = request.get_json() or json.loads(request.get_data())
     name = data.get('name')
     description = data.get('description', '')
     response = create_new_specie(name=name, description=description)
@@ -62,7 +72,7 @@ def get_animal(id):
 
 
 def put_animal(id):
-    data = request.get_json()
+    data = request.get_json() or json.loads(request.get_data())
     name = data['name']
     price = data['price']
     description = data['description']
@@ -79,6 +89,15 @@ def delete_animal(center, id):
 
 @app.route('/animal/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def animal(id):
+    """
+    rest api endpoint
+    GET:
+        return detailed information about an animal
+    PUT:
+        update value of animal
+    DELETE:
+        delete animal if center that own
+    """
     if  request.method == 'GET': 
         return get_animal(id)
     elif request.method == 'PUT': 
@@ -89,6 +108,12 @@ def animal(id):
 
 @app.route('/specie/<int:id>', methods=['GET'])
 def specie(id):
+    """
+    rest api endpoint
+    GET:
+        return detailed view of this Specie with list of animals  
+        in format “animal name - id - specie”
+    """
     specie_or_response = get_specie_by_id(id)
     return specie_or_response
 

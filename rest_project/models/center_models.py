@@ -5,6 +5,9 @@ from rest_project import db
 
 
 class Center(db.Model):
+    """
+    Centers table
+    """
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
@@ -22,6 +25,9 @@ class Center(db.Model):
         return [f"{animal.name} - {animal.specie.name}" for animal in self.animals]
 
 class JWTAccess(db.Model):
+    """
+    JWT accesses table
+    """
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     

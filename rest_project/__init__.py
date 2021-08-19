@@ -1,10 +1,11 @@
-from flask import Flask
+import re
+from flask import Flask, has_request_context, request
+from flask.logging import default_handler
 from flask_sqlalchemy import SQLAlchemy
 
 from configparser import ConfigParser
-
 import os
-
+from datetime import date
 
 parser = ConfigParser()
 
@@ -19,3 +20,5 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = bool(database['Track_modification
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', '12345678b9a0a9b87654321')
 
 db = SQLAlchemy(app)
+
+
