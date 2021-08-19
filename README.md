@@ -29,17 +29,17 @@ or
 pyton3 -m pip3 install -r requirements.txt
 ```
 
-### Run server
+## Run server
 
 ```bash
 cd Rest_capstone_project
 python3 app.py
 ```
 
-### Config
+## Config
 In file config.ini you may change database_uri, port and debug_mode
 
-### Quick start
+## Quick start
 First you need to register your center
 
 ```bash
@@ -84,6 +84,16 @@ Some other urls to get information about center/animal/specie
 - DELETE:
     - url to delete animal:
         * /animal/\<id\>
+
+
+## Tests
+
+```bash
+python3 -m unittest
+```
+
+Results
+![Tests image]('https://github.com/Dkozakk/Rest_capstone_project/blob/main/img/tests.jpg?raw=true')
 
 ### P.S.
 if *python3* command doesn't work for you, try to use *py* or *python* instead
