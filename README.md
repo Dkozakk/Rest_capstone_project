@@ -58,7 +58,7 @@ You shoud save it
 Before adding new animal you must create specie first
 
 ```bash
-curl -d '{"name": "cat", "description": "simple cat"}' -H "Content-Type: application/json" -X POST http://localhost:{port}/species?token={token from previous step}
+curl -d '{"name": "cat", "description": "simple cat"}' -H "Content-Type: application/json" -X POST 'http://localhost:{port}/species?token={token from previous step}'
 ```
 
 If you are seeing a success message, you are able to add your first animal
