@@ -5,6 +5,7 @@ REST API for Animals Sales Web Project
 ## Install
 ```bash
 git clone https://github.com/Dkozakk/Rest_capstone_project.git
+cd Rest_capstone_project
 ```
 ### Make an virtual environment
 ```bash
@@ -32,7 +33,6 @@ pyton3 -m pip3 install -r requirements.txt
 ## Run server
 
 ```bash
-cd Rest_capstone_project
 python3 app.py
 ```
 
