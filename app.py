@@ -5,8 +5,12 @@ from datetime import date
 
 from rest_project import app, db
 from rest_project.rest.animals_api import animal, animals, specie, species
-from rest_project.rest.center_api import (get_center, get_centers, login,
-                                          register)
+from rest_project.rest.center_api import (
+    get_center, 
+    get_centers, 
+    login,
+    register
+)
 
 
 @app.before_first_request
@@ -31,7 +35,6 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
     file_handler.setFormatter(logging.Formatter('%(asctime)s | %(message)s'))
     file_handler.setLevel(logging.DEBUG)
-    
     
     parser = ConfigParser()
     parser.read('config.ini')
