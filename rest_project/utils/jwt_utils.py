@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
 import jwt
-from flask import request
-from flask.json import jsonify
+from flask import request, jsonify
 from rest_project import app
 from rest_project.models.center_models import Center, JWTAccess
 

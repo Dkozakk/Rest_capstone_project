@@ -2,11 +2,16 @@ import json
 
 from flask import request
 from rest_project import app
-from rest_project.models.animals_models import Animal, Specie
-from rest_project.service.animals import (create_new_animal, create_new_specie,
-                                          edit_animal, get_all_animals,
-                                          get_all_species, get_animal_by_id,
-                                          get_specie_by_id, remove_animal)
+from rest_project.service.animals import (
+    create_new_animal,
+    create_new_specie,
+    edit_animal,
+    get_all_animals,
+    get_all_species,
+    get_animal_by_id,
+    get_specie_by_id,
+    remove_animal,
+)
 from rest_project.utils.jwt_utils import jwt_required
 
 
@@ -21,19 +26,19 @@ def animals():
     """
     if request.method == 'GET':
         return get_all_animals()
-    return create_animal()
-
-
-@jwt_required
-def create_animal(center):
     data = request.get_json() or json.loads(request.get_data())
-    name = data.get('name')
-    description = data.get('name')
-    age = data.get('age')
-    price = data.get('price')
-    specie = data.get('specie')
-    response = create_new_animal(name=name, age=age, description=description, price=price, specie=specie, center=center)
-    return response
+    return jwt_required(create_animal)(data=data)
+
+
+def create_animal(center, data):
+    return create_new_animal(
+        name=data.get('name'),
+        age=data.get('age'),
+        description=data.get('description'),
+        price=data.get('price'),
+        specie=data.get('specie'),
+        center=center,
+    )
 
 
 @app.route('/species', methods=['POST', 'GET'])
@@ -47,40 +52,27 @@ def species():
     """
     if request.method == 'GET':
         return get_all_species()
-    return create_specie()
-
-
-@jwt_required
-def create_specie(center):
     data = request.get_json() or json.loads(request.get_data())
+    return jwt_required(create_specie)(data=data)
+
+
+def create_specie(center, data):
     name = data.get('name')
-    description = data.get('description', '')
+    description = data.get('description')
     response = create_new_specie(name=name, description=description, center=center)
     return response
 
 
-def get_animal(id):
-    animal_or_response = get_animal_by_id(id)
-    return animal_or_response
-
-
-def put_animal(center, id):
-    data = request.get_json() or json.loads(request.get_data())
-    name = data['name']
-    price = data['price']
-    description = data['description']
-    age = data['age']
-    specie = data['specie']
-    response = edit_animal(
-        id=id, 
-        name=name, 
-        price=price, 
-        description=description, 
-        specie=specie, 
-        age=age, 
+def put_animal(center, id, data):
+    return edit_animal(
+        id=id,
+        name=data.get('name'),
+        price=data.get('price'),
+        description=data.get('description'),
+        specie=data.get('specie'),
+        age=data.get('age'),
         center=center,
-        )
-    return response
+    )
 
 
 def delete_animal(center, id):
@@ -99,11 +91,14 @@ def animal(id):
     DELETE:
         delete animal if center that own
     """
-    if  request.method == 'GET': 
-        return get_animal(id)
-    elif request.method == 'PUT': 
-        return jwt_required(put_animal)(id=id)
-    elif request.method == 'DELETE': 
+    if request.method == 'GET':
+        return get_animal_by_id(id)
+
+    if request.method == 'PUT':
+        data = request.get_json() or json.loads(request.get_data())
+        return jwt_required(put_animal)(id=id, data=data)
+
+    if request.method == 'DELETE':
         return jwt_required(delete_animal)(id=id)
 
 
@@ -112,11 +107,10 @@ def specie(id):
     """
     rest api endpoint
     GET:
-        return detailed view of this Specie with list of animals  
+        return detailed view of this Specie with list of animals
         in format “animal name - id - specie”
     """
-    specie_or_response = get_specie_by_id(id)
-    return specie_or_response
+    return get_specie_by_id(id)
 
 
 __all__ = ["species", "animals", "animal", "specie"]

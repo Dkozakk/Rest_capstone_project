@@ -2,11 +2,11 @@ import json
 import unittest
 
 from rest_project import app, db
-from rest_project.models.animals_models import Animal
+import rest_project.models.animals_models
 from rest_project.models.center_models import Center
-from rest_project.rest.center_api import *
+import rest_project.rest.center_api
 
-headers={"Content-type": "application/json"}
+headers = {"Content-type": "application/json"}
 
 
 class TestCenters(unittest.TestCase):
@@ -14,10 +14,10 @@ class TestCenters(unittest.TestCase):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         app.config['TESTING'] = True
         self.app = app.test_client()
-        
+
         with app.app_context():
             db.create_all()
-        
+
         data = {
             "login": "test",
             "password": "test_pswd",
@@ -26,7 +26,7 @@ class TestCenters(unittest.TestCase):
         self.app.post('/register', headers=headers, json=data)
         response = self.app.get('/login', headers=headers, json=data)
         self.jwt = response.data.decode('utf-8')
-    
+
     def test_get_center_by_id(self):
         id = 1
         center = Center.query.get(id)

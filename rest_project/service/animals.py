@@ -1,24 +1,24 @@
 import logging
-from rest_project.models.center_models import Center
-from sqlite3 import IntegrityError
 
 from flask import Response, jsonify, request
 from rest_project import db
 from rest_project.models.animals_models import Animal, Specie
-from rest_project.utils.checking_utils import (check_animal_attributes,
-                                               check_specie_attributes)
+from rest_project.utils.checking_utils import (
+    check_animal_attributes,
+    check_specie_attributes,
+)
 
 logger = logging.getLogger('rest_app_logger')
 
-message = "{method} | {url} | {center_id} | {entity_type} | {entity_id}"
+message = "{method} | {url} | Center: {center_id} | {entity_type}: {entity_id}"
 
 
 def log(center_id, entity_type, entity_id):
     logger.info(message.format(
-        method=request.method, 
-        url=request.url, 
-        center_id=center_id, 
-        entity_type=entity_type, 
+        method=request.method,
+        url=request.url,
+        center_id=center_id,
+        entity_type=entity_type,
         entity_id=entity_id,
         )
     )
@@ -41,8 +41,8 @@ def get_specie_by_name(specie_name):
     return:
         first occurrence specie with name specie_name
     """
-    specie = Specie.query.filter_by(name=specie_name).first()
-    return specie
+    return Specie.query.filter_by(name=specie_name).first()
+
 
 def create_new_animal(name, age, description, price, specie, center):
     """
@@ -58,25 +58,29 @@ def create_new_animal(name, age, description, price, specie, center):
         Error response
         Success response
     """
-    if not name or not age or not description or not price or not specie:
+    if not any((name, age, description, price, specie)):
         return Response("Error, you didn't provide one or more fields")
-    
+
     checked, msg = check_animal_attributes(name=name, age=age, price=price, description=description)
     if not checked:
         return Response(msg)
 
     specie = get_specie_by_name(specie)
-    
+
     if not specie:
         return Response("Error, you must create this specie first")
-    
-    animal = Animal(name=name, age=age, description=description, price=price)
+
+    animal = Animal(
+        name=name,
+        age=age,
+        description=description,
+        price=price,
+    )
     animal.specie = specie
     animal.center = center
     db.session.add(animal)
     db.session.commit()
     log(center_id=center.id, entity_type='Animal', entity_id=animal.id)
-
 
     return Response("Animal was created")
 
@@ -89,12 +93,12 @@ def create_new_specie(name, description, center):
         description: str species description
         center: Center just for logging
     """
-    if not name or not description:
+    if not any((name, description)):
         return Response("Error, you didn't provide name or description")
-    
+
     checked, msg = check_specie_attributes(name=name, description=description)
     if not checked:
-        return Response(msg) 
+        return Response(msg)
 
     specie = Specie(name=name, description=description)
     db.session.add(specie)
@@ -115,7 +119,10 @@ def get_specie_by_id(id):
     specie = Specie.query.get(id)
     if not specie:
         return Response("Specie with given id does not exist")
-    return jsonify({"specie": specie.serialize(), "animals": [f"{animal.name} - {animal.id} - {specie.name}" for animal in specie.animals]})
+    return jsonify({
+        "specie": specie.serialize(), 
+        "animals": [f"{animal.name} - {animal.id} - {specie.name}" for animal in specie.animals]
+        })
 
 
 def get_all_species():
@@ -124,8 +131,7 @@ def get_all_species():
     return:
         list of species with counts animals in json format
     """
-    species = Specie.query.all()
-    return jsonify([{"specie": specie.name, "animals": len(specie.animals)} for specie in species])
+    return jsonify([{"specie": specie.name, "animals": len(specie.animals)} for specie in Specie.query.all()])
 
 
 def get_animal_by_id(id):
@@ -159,7 +165,7 @@ def edit_animal(id, name, description, price, age, specie, center):
     """
     animal = Animal.query.get(id)
     if not animal:
-        return Response("Animal with given id does not exist")    
+        return Response("Animal with given id does not exist")
     animal.name = name
     animal.description = description
     animal.price = price

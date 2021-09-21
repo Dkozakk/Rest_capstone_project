@@ -1,12 +1,13 @@
 import json
 
-from flask import Response, jsonify, request
-from rest_project import app, db
-from rest_project.models.center_models import Center
-from rest_project.service.center import (get_all_centers, get_center_by_id,
-                                         get_jwt_token, register_center)
-from rest_project.utils.jwt_utils import generate_expire_date, jwt_required
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import request
+from rest_project import app
+from rest_project.service.center import (
+    get_all_centers,
+    get_center_by_id,
+    get_jwt_token,
+    register_center,
+)
 
 
 @app.route('/register', methods=['POST'])
@@ -17,11 +18,11 @@ def register():
         register login and password
     """
     data = request.get_json() or json.loads(request.get_data())
-    login = data.get('login')
-    password = data.get('password')
-    address=data.get('address')
-    response = register_center(login, password, address)
-    return response
+    return register_center(
+        login=data.get('login'),
+        password=data.get('password'),
+        address=data.get('address'),
+    )
 
 
 @app.route('/center/<int:id>', methods=['GET'])
@@ -31,8 +32,7 @@ def get_center(id):
     GET:
         return detailed information about center with current “id”
     """
-    center_or_response = get_center_by_id(id)
-    return center_or_response
+    return get_center_by_id(id)
 
 
 @app.route('/centers', methods=['GET'])
@@ -53,10 +53,10 @@ def login():
         return token if login and password are ok
     """
     data = request.get_json() or json.loads(request.get_data())
-    login = data.get('login')
-    password = data.get('password')
-    token_or_response = get_jwt_token(login, password)
-    return token_or_response
-    
+    return get_jwt_token(
+        login=data.get('login'),
+        password=data.get('password'),
+    )
+
 
 __all__ = ["login", "get_center", "register", "get_centers"]

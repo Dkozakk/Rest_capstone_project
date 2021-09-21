@@ -6,7 +6,7 @@ messages = {
 }
 
 
-def check_animal_attributes(name,age, price, description):
+def check_animal_attributes(name, age, price, description):
     """
     function check animal attributes for correct datatype
     attrs:
@@ -19,15 +19,15 @@ def check_animal_attributes(name,age, price, description):
     """
     if not any((isinstance(name, str), isinstance(age, int), isinstance(description, str))):
         return False, messages['wrong type']
-    
-    if not('.' in price and len(price.split('.')) == 2):
+
+    if not('.' in price and len(price.split('.'))[1] == 2):
         return False, "Don't specified . in price or not two signs after ."
 
     try:
-        Decimal(price)        
+        Decimal(price)
     except InvalidOperation:
         return False, 'Price is string or incorrect number, please, specify it as 12.53'
-    
+
     return True, messages['correct']
 
 

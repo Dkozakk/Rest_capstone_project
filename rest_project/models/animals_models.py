@@ -4,6 +4,14 @@ from rest_project import db
 class Animal(db.Model):
     """
     Animals table
+    attrs:
+        id: int
+        name: str
+        description: str
+        age: int
+        price: str
+        center: Center
+
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -13,7 +21,7 @@ class Animal(db.Model):
 
     center_id = db.Column(db.Integer, db.ForeignKey('center.id'))
     center = db.relationship('Center', backref=db.backref('animals', lazy=True))
-    
+
     specie_id = db.Column(db.Integer, db.ForeignKey('specie.id'))
 
     def serialize(self):
@@ -30,11 +38,16 @@ class Animal(db.Model):
 class Specie(db.Model):
     """
     Species table
+    attrs:
+        id: int
+        name: str
+        description: str
+        animals: list[Animal]
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    
+
     animals = db.relationship('Animal', backref=db.backref('specie', lazy=True))
 
     def serialize(self):
